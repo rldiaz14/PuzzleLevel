@@ -11,10 +11,20 @@ AMovingPlatform::AMovingPlatform()
 	SetMobility(EComponentMobility::Movable);
 }
 
+void AMovingPlatform::BeginPlay()
+{
+	if (HasAuthority()) {
+		SetReplicates(true);
+		SetReplicateMovement(true);
+	}
+
+}
+
 void AMovingPlatform::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	if (HasAuthority())
+	// If on the server this object has authority to move
 	if (HasAuthority())
 	{
 		FVector Location = GetActorLocation();
