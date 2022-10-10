@@ -13,7 +13,10 @@ AMovingPlatform::AMovingPlatform()
 
 void AMovingPlatform::BeginPlay()
 {
-	if (HasAuthority()) {
+	Super::BeginPlay();
+
+	if (HasAuthority()) 
+	{
 		SetReplicates(true);
 		SetReplicateMovement(true);
 	}
@@ -23,12 +26,13 @@ void AMovingPlatform::BeginPlay()
 void AMovingPlatform::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (HasAuthority())
-	// If on the server this object has authority to move
-	if (HasAuthority())
+
+	if (HasAuthority()) 
 	{
 		FVector Location = GetActorLocation();
-		Location += FVector(Speed * DeltaTime, 0, 0);
+		FVector GlobalTargetLocation = GetTransform().TransformPosition(TargetLocation);
+		FVector Direction = (GlobalTargetLocation - Location).GetSafeNormal();
+		Location += Speed * DeltaTime * Direction;
 		SetActorLocation(Location);
 	}
 	
